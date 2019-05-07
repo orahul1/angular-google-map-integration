@@ -1,0 +1,20 @@
+
+.container{
+  display: flex;
+  justify-content: space-between;
+
+  .controls{
+    padding: 10px;
+  }
+  #map{
+    margin: 10px;
+    float: right;
+    width:50%;
+    height:400px
+  }
+  
+}
+
+mat-toolbar-row{
+justify-content: center;
+}
