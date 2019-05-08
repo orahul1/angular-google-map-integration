@@ -181,36 +181,41 @@ export class AppComponent implements OnInit {
   }
 
   geolocation(){
-    let infoWindow = new google.maps.InfoWindow;
-    let map = new google.maps.Map(document.getElementById('map'));
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+      let infoWindow = new google.maps.InfoWindow;
+      let map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 8.546814399999999, lng: 76.8790981},
+          zoom: 15
+      });
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            let pos = {
+            var pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
-            };           
+            };
+
             infoWindow.setPosition(pos);
             infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
           }, function() {
-            this.handleLocationError(true, infoWindow, this.map.getCenter());
+            this.handleLocationError(true, infoWindow, map.getCenter());
           });
         } else {
           // Browser doesn't support Geolocation
-          this.handleLocationError(false, infoWindow, this.map.getCenter());
+           this.handleLocationError(false, infoWindow, map.getCenter());
         }
       }
 
-       handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        let map = new google.maps.Map(this.gmapElement.nativeElement);
+      handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
                               'Error: The Geolocation service failed.' :
                               'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
-      }
-
-
+    }
 }
