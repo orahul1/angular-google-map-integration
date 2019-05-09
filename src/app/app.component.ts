@@ -1,4 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -12,33 +13,50 @@ export class AppComponent implements OnInit {
   zoomValue = 15; 
   TILE_SIZE = 256;
   isDarkTheme;
+  disableDefaultUI;
+  mapSwitch;
+  zoomOption;
+  streetView;
   map: google.maps.Map;
   mapProp;
   title = 'google-map';
 
+  constructor(private cs: CookieService){
+    
+  }
+
   ngOnInit(){
+    this.checkUI();
+    this.checkMapSwitch();
+    this.checkZoomOption();
+    this.checkstreetView();
      this.mapProp = {
       center: new google.maps.LatLng(8.546814399999999, 76.8790981),
       zoom: this.zoomValue,
       styles: [],
+      disableDefaultUI: this.disableDefaultUI,
+      mapTypeControl: this.mapSwitch,
+      zoomControl: this.zoomOption,
+      streetViewControl: this.streetView,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
         
-    if(localStorage.getItem('themeType') == 'dark'){
+    if(this.cs.get('themeType') == 'dark'){
       this.isDarkTheme = true;
       this.mapProp.styles = JSON.parse(localStorage.getItem('theme'));
     }
-    
     this.map = new google.maps.Map(this.gmapElement.nativeElement, this.mapProp);
   }
+
 
   zoomLevel(zoomValue){
     this.map.setZoom(zoomValue);
   }
 
+
   enableDarkMode(){   
-    if(localStorage.getItem('themeType') != null){
-      localStorage.clear();
+    if(this.cs.get('themeType') != ''){
+      this.cs.delete('themeType');
       this.isDarkTheme = false;
       location.reload();
     }else{
@@ -124,7 +142,7 @@ export class AppComponent implements OnInit {
       ]
       this.isDarkTheme = true;
       localStorage.setItem('theme', JSON.stringify(style));
-      localStorage.setItem('themeType', 'dark');
+      this.cs.set('themeType', 'dark');
       window.location.reload();
     }
   }
@@ -134,18 +152,11 @@ export class AppComponent implements OnInit {
     coordInfoWindow.setContent(this.createInfoWindowContent(this.mapProp.center, this.map.getZoom()));
     coordInfoWindow.setPosition(this.mapProp.center);
     coordInfoWindow.open(this.map);
-
-    this.mapProp.addListener('zoom_changed', function() {
-      coordInfoWindow.setContent(this.createInfoWindowContent(this.mapProp.center, this.map.getZoom()));
-      coordInfoWindow.open(this.map);
-    });
   }
 
 
   createInfoWindowContent(latLng, zoom) {
-
     var scale = 1 << zoom;
-
     var worldCoordinate = this.project(latLng);
 
     var pixelCoordinate = new google.maps.Point(
@@ -179,6 +190,8 @@ export class AppComponent implements OnInit {
         this.TILE_SIZE * (0.5 + latLng.lng() / 360),
         this.TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
   }
+
+
 
   geolocation(){
       // Note: This example requires that you consent to location sharing when
@@ -217,5 +230,62 @@ export class AppComponent implements OnInit {
                               'Error: The Geolocation service failed.' :
                               'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
+    }
+
+    disableDefaultUIControl(){ 
+      this.disableDefaultUI = !this.disableDefaultUI;  
+      this.cs.set('disableDefaultUI', this.disableDefaultUI);
+      window.location.reload();
+    }
+
+    mapToSatellite(){
+      this.mapSwitch = !this.mapSwitch;  
+      this.cs.set('mapSwitch', this.mapSwitch);
+      window.location.reload();
+    }
+
+    zoomControl(){
+      this.zoomOption = !this.zoomOption;  
+      this.cs.set('zoomOption', this.zoomOption);
+      window.location.reload();
+    }
+
+    streetViewControl(){
+      this.streetView = !this.streetView;  
+      this.cs.set('streetView', this.streetView);
+      window.location.reload();
+    }
+    
+    //check value in cookie to set in oninit
+    checkUI(){
+      if(this.cs.get('disableDefaultUI')  == 'true'){
+        this.disableDefaultUI  = true;
+      }else{
+        this.disableDefaultUI = false;
+      }
+    }
+
+    checkMapSwitch(){
+      if(this.cs.get('mapSwitch')  == 'true'){
+        this.mapSwitch  = true;
+      }else{
+        this.mapSwitch = false;
+      }
+    }
+
+    checkZoomOption(){
+      if(this.cs.get('zoomOption')  == 'true'){
+        this.zoomOption  = true;
+      }else{
+        this.zoomOption = false;
+      }
+    }
+
+    checkstreetView(){
+      if(this.cs.get('streetView')  == 'true'){
+        this.streetView  = true;
+      }else{
+        this.streetView = false;
+      }
     }
 }

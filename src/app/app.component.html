@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Google map Integration  [ add API key in index.html ]</span>
+    <span>Google map Integration [ add API key in index.html ]</span>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -14,17 +14,39 @@
 
     <div>
       <mat-checkbox class="example-margin" (click)="enableDarkMode()" [checked]="isDarkTheme">Night Mode</mat-checkbox>
-   </div>
+    </div>
 
-   <div>
-      <mat-checkbox class="example-margin" (click)="showPixelAndCoordinates()">Showing Pixel and Tile Coordinates</mat-checkbox>
-   </div>
+    <div>
+      <mat-checkbox class="example-margin" (click)="disableDefaultUIControl();" [checked]="disableDefaultUI">disable
+        Default UI
+      </mat-checkbox>
+    </div>
 
-   <div>
+    <div>
+      <mat-checkbox class="example-margin" (click)="mapToSatellite();" [checked]="mapSwitch">Map to Satellite Option
+      </mat-checkbox>
+    </div>
+
+    <div>
+      <mat-checkbox class="example-margin" (click)="zoomControl();" [checked]="zoomOption">Zoom Contol
+      </mat-checkbox>
+    </div>
+
+    <div>
+      <mat-checkbox class="example-margin" (click)="streetViewControl();" [checked]="streetView">Street View Control
+      </mat-checkbox>
+    </div>
+
+    <div>
+      <mat-checkbox class="example-margin" (click)="showPixelAndCoordinates()">Showing Pixel and Tile Coordinates
+      </mat-checkbox>
+    </div>
+
+    <div>
       <mat-checkbox class="example-margin" (click)="geolocation()">Geolocation</mat-checkbox>
-   </div>
-   
+    </div>
+
 
   </div>
   <div #gmap id="map"></div>
-</div> 
+</div>
