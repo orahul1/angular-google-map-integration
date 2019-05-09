@@ -203,15 +203,15 @@ export class AppComponent implements OnInit {
             infoWindow.open(map);
             map.setCenter(pos);
           }, function() {
-            this.handleLocationError(true, infoWindow, map.getCenter());
+            this.handleLocationError(true, map, infoWindow, map.getCenter());
           });
         } else {
           // Browser doesn't support Geolocation
-           this.handleLocationError(false, infoWindow, map.getCenter());
+           this.handleLocationError(false, map, infoWindow, map.getCenter());
         }
       }
 
-      handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      handleLocationError(browserHasGeolocation, map, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
                               'Error: The Geolocation service failed.' :
